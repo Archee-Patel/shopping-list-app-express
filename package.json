@@ -1,15 +1,25 @@
 {
-  "name": "shopping-list-app-express",
+  "name": "shoppinglist-archh2401",
   "version": "1.0.0",
-  "description": "Shopping List App - Complete Authentication, Authorization & Validation",
+  "description": "Shopping List app - OAuth2 (Google) + JWT + SQLite - assignment",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "migrate": "node migrations/init.js"
   },
   "dependencies": {
-    "express": "^4.18.0",
-    "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.0"
-  }
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^8.0.0",
+    "dotenv": "^16.0.0",
+    "ejs": "^3.1.10",
+    "express": "^4.18.2",
+    "express-session": "^1.18.2",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "^9.0.0",
+    "node-fetch": "^2.6.9",
+    "passport": "^0.7.0",
+    "passport-google-oauth2": "^0.2.0"
+  },
+  "type": "commonjs"
 }

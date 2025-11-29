@@ -1,48 +1,47 @@
-const validateCreateList = (req, res, next) => {
-  const { name } = req.body;
-  if (!name || typeof name !== 'string' || name.length < 1 || name.length > 100) {
-    return res.status(400).json({
-      uuAppErrorMap: {
-        'validation/name-invalid': {
-          type: 'error',
-          message: 'Name required (1-100 characters)'
-        }
-      }
-    });
-  }
-  next();
-};
 
-const validateId = (req, res, next) => {
-  const id = req.body.id || req.query.id;
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({
-      uuAppErrorMap: {
-        'validation/id-required': {
-          type: 'error',
-          message: 'ID is required'
-        }
-      }
-    });
-  }
-  next();
-};
+const Joi = require('joi');
 
-const validateRequiredFields = (fields) => {
+const createListSchema = Joi.object({
+  name: Joi.string().min(1).max(100).required()
+});
+
+const idQuerySchema = Joi.object({
+  id: Joi.string().required()
+});
+
+const assignRoleSchema = Joi.object({
+  userId: Joi.string().required(),
+  role: Joi.string().valid('Authority','User').required()
+});
+
+function validateBody(schema) {
   return (req, res, next) => {
-    const missing = fields.filter(field => !req.body[field]);
-    if (missing.length > 0) {
-      return res.status(400).json({
-        uuAppErrorMap: {
-          'validation/fields-required': {
-            type: 'error',
-            message: `Required: ${missing.join(', ')}`
-          }
-        }
-      });
+    const { error } = schema.validate(req.body);
+    if (error) {
+      const e = new Error('Validation failed: ' + error.message);
+      e.status = 400;
+      e.uuAppErrorMap = { 'validation/failed': { type: 'error', message: error.message } };
+      return next(e);
     }
     next();
   };
-};
+}
 
-module.exports = { validateCreateList, validateId, validateRequiredFields };
+function validateQuery(schema) {
+  return (req, res, next) => {
+    const { error } = schema.validate(req.query);
+    if (error) {
+      const e = new Error('Validation failed: ' + error.message);
+      e.status = 400;
+      e.uuAppErrorMap = { 'validation/failed': { type: 'error', message: error.message } };
+      return next(e);
+    }
+    next();
+  };
+}
+
+module.exports = {
+  validateCreateList: validateBody(createListSchema),
+  validateIdQuery: validateQuery(idQuerySchema),
+  validateAssignRole: validateBody(assignRoleSchema)
+};

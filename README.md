@@ -1,24 +1,52 @@
-# Shopping List Application
+# 🛒 Shopping List App
 
-Complete backend implementation with full authentication, authorization, and validation.
+Complete backend with MongoDB, JWT auth, and role-based access.
 
-## Features
+## 🚀 Quick Start
 
-- **User Management**: Registration and login with credential validation
-- **Authentication**: JWT tokens with 1-hour expiration
-- **Authorization**: 3 user profiles (Authority, Owner, Member)
-- **Validation**: Comprehensive input validation
-- **Error Handling**: uuAppErrorMap format
-- **11 Protected Endpoints**: Full CRUD operations
+1. **Install & Run**
+```bash
+npm install bcrypt
+npm install mongoose
+npm install passport passport-google-oauth2 express-session
+npm install
+npm start
 
-## Default Users
+env 
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/shoppinglist-app
+JWT_SECRET=your-secret-key
 
-- `admin / admin123` (Authority - full access)
-- `owner / owner123` (Owner - can create/manage lists)  
-- `member / member123` (Member - can view/add items)
+API Endpoints
+Auth
+POST /users/register - Create account
 
-## API Endpoints
+POST /users/login - Login
 
-- `POST /register` - User registration
-- `POST /login` - User login (credential validation)
-- All shopping list endpoints under `/shoppinglist-main/{awid}/`
+GET /auth/google - Google OAuth
+
+Lists
+POST /shoppinglist-main/:awid/create - Create list
+
+GET /shoppinglist-main/:awid/list - Get lists
+
+GET /shoppinglist-main/:awid/get - Get list + items
+
+POST /shoppinglist-main/:awid/update - Update list
+
+POST /shoppinglist-main/:awid/delete - Delete list
+
+Items
+POST /shoppinglist-main/:awid/item/add - Add item
+
+POST /shoppinglist-main/:awid/item/remove - Remove item
+
+Roles
+Authority - Full access
+
+Owner - Manage own lists
+
+Member - View/add to shared lists
+
+Testing
+Import test/insomnia/insomnia_collection.json to Insomnia
