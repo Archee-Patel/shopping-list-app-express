@@ -5,6 +5,15 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "test": "jest --config jestconfig.js",
+    "test:watch": "jest --config jestconfig.js --watch",
+    "test:coverage": "jest --config jestconfig.js --coverage",
+    "test:unit": "jest --config jestconfig.js tests/unit",
+    "test:integration": "jest --config jestconfig.js tests/integration",
+    "test:middleware": "jest --config jestconfig.js tests/unit/middleware",
+    "test:models": "jest --config jestconfig.js tests/unit/models",
+    "test:abl": "jest --config jestconfig.js tests/unit/abl",
+    "test:utils": "jest --config jestconfig.js tests/unit/utils",
     "migrate": "node migrations/init.js"
   },
   "dependencies": {
@@ -20,6 +29,11 @@
     "node-fetch": "^2.6.9",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.4.1",
+    "supertest": "^7.1.4"
   },
   "type": "commonjs"
 }

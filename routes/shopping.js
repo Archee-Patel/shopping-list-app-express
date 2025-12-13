@@ -69,9 +69,9 @@ router.post("/update", authenticate, roleAuth.requireListOwner, async (req, res,
 });
 
 // POST /shoppinglist-main/:awid/delete - Only owners/authority can delete
-router.post("/delete", authenticate, authorize(["Authority"]), roleAuth.requireListOwner, async (req, res, next) => {
+router.post("/delete", authenticate, roleAuth.requireListOwner, async (req, res, next) => {
   try {
-    const result = await ShoppingAbl.delete({
+    const result = await ShoppingAbl.remove({
       ...req.body,
       user: req.user
     });

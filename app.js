@@ -8,7 +8,6 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/users");
 const shoppingRoutes = require("./routes/shopping");
 const connectDB = require('./utils/mongodb');
-connectDB();
 const passport = require('./config/passport');
 const session = require('express-session');
 
@@ -47,9 +46,16 @@ app.get("/sys/health", (req, res) =>
 // error handler (must be last)
 app.use(errorHandler);
 
-// START SERVER (missing part - fixed)
+// Start server only when executed directly (prevents binding and DB connect during tests)
 const PORT = process.env.PORT || 3000;
+if (require.main === module) {
+  // Connect to DB and then start listening
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    });
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+// Export app for testing without starting the listener
+module.exports = app;

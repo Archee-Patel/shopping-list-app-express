@@ -246,7 +246,42 @@ async function getListItems({ listId, page = 0, pageSize = 20, user }) {
   };
 }
 
+async function update({ id, name, user }) {
+  const list = await ShoppingList.findById(id);
 
+  if (!list) {
+    const e = new Error('List not found');
+    e.status = 404;
+    e.uuAppErrorMap = { 'list/not-found': { type: 'error', message: 'List not found' } };
+    throw e;
+  }
+
+  // Authority can update anything
+  if (user.profiles && user.profiles.includes('Authority')) {
+    list.name = name || list.name;
+    await list.save();
+    return list;
+  }
+
+  // Normalize owner comparison to support plain strings or mongoose-like equals
+  const ownerId = typeof list.owner === 'object' && list.owner !== null ? (list.owner._id || list.owner) : list.owner;
+  const isOwner = typeof list.owner === 'object' && typeof list.owner.equals === 'function'
+    ? list.owner.equals(user._id)
+    : ownerId === user._id;
+
+  if (!isOwner) {
+    const e = new Error('Only list owner can perform this action');
+    e.status = 403;
+    e.uuAppErrorMap = { 'auth/owner-required': { type: 'error', message: 'Only list owner can perform this action' } };
+    throw e;
+  }
+
+  list.name = name || list.name;
+  await list.save();
+  return list;
+}
+
+// Don't forget to export it at the bottom:
 module.exports = { 
   list, 
   create, 
@@ -255,5 +290,6 @@ module.exports = {
   addItem, 
   removeItem, 
   shareList,
-  getListItems 
+  getListItems,
+  update,
 };
